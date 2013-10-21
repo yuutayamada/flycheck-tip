@@ -22,3 +22,14 @@ You need flycheck and popup packages.
 Do M-x flycheck-tip-cycle or push its key.
 Then you can move next error.
 If next error wasn't exists then move to first error if it's exists.
+
+# Note
+
+This program avoid *flycheck-show-error-at-point* function to avoid
+duplicated error message(i.e., minibuffer and popup-tip).
+But if you want to regain this behavior, set following configuration
+to your .emacs:
+
+```lisp
+(setq flycheck-tip-avoid-show-func nil)
+```
