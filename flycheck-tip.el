@@ -71,7 +71,7 @@
     (around flycheck-tip-avoid-function activate)
     nil))
 
-(defun flycheck-tip-collect-current-file-errors (&optional direction)
+(defun flycheck-tip-collect-current-file-errors ()
   (loop with errors       = flycheck-current-errors
         with next         = '()
         with previous     = '()
