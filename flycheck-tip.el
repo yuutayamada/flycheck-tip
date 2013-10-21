@@ -54,11 +54,8 @@
          (previous (assoc-default :previous     errors))
          (cur-line (assoc-default :current-line errors))
          (jump (lambda (direction errs)
-                 (case direction
-                   (:next         (flycheck-next-error))
-                   (:previous     (flycheck-previous-error))
-                   (:current-line (beginning-of-line)
-                                  (flycheck-next-error)))
+                 (goto-char (point-min))
+                 (forward-line (1- (elt (car errs) 4)))
                  (flycheck-tip-popup-error-message errs))))
       ;; priority
       (if next
@@ -95,12 +92,7 @@
                              (cons :current-line current-line))))
 
 (defun flycheck-tip-popup-error-message (errors)
-  (loop for error in errors
-        for line = (elt error 4)
-        if (and
-            (equal (line-number-at-pos (point)) line)
-            (equal (expand-file-name buffer-file-truename) (elt error 3)))
-        do (popup-tip (elt error 6))))
+  (popup-tip (elt (car errors) 6)))
 
 (provide 'flycheck-tip)
 
