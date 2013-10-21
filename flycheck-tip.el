@@ -22,6 +22,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;; see readme.md
+
+;;; Code:
+
 (eval-when-compile (require 'cl))
 (require 'flycheck)
 (require 'popup)
