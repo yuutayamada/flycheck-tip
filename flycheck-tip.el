@@ -2,7 +2,11 @@
 (require 'flycheck)
 (require 'popup)
 
-(defvar flycheck-tip-avoid-show-func t)
+(defcustom flycheck-tip-avoid-show-func t
+  "Avoid `flycheck-show-error-at-point' function's behavior.
+ This variable is true by default."
+  :group 'flycheck-tip
+  :type 'boolean)
 
 ;; Error status memo
 ;; 0 : err name?
