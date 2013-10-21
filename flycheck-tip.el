@@ -53,17 +53,17 @@
          (next     (assoc-default :next         errors))
          (previous (assoc-default :previous     errors))
          (cur-line (assoc-default :current-line errors))
-         (jump (lambda (direction errs)
+         (jump (lambda (errs)
                  (goto-char (point-min))
                  (forward-line (1- (elt (car errs) 4)))
                  (flycheck-tip-popup-error-message errs))))
       ;; priority
       (if next
-          (funcall jump :next next)
+          (funcall jump next)
         (if previous
-            (funcall jump :previous previous)
+            (funcall jump previous)
           (when cur-line
-            (funcall jump :current-line cur-line)))))))
+            (funcall jump cur-line)))))))
 
 (when flycheck-tip-avoid-show-func
   (defadvice flycheck-show-error-at-point
