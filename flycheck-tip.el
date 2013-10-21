@@ -45,19 +45,20 @@
 ;;;###autoload
 (defun flycheck-tip-cycle ()
   (interactive)
-  (lexical-let*
-      ((next     (flycheck-tip-collect-current-file-errors :next))
-       (previous (unless next
-                   (flycheck-tip-collect-current-file-errors :previous)))
-       (jump (lambda (direction errors)
-               (case direction
-                 (:next     (flycheck-next-error))
-                 (:previous (flycheck-previous-error)))
-               (flycheck-tip-popup-error-message errors))))
-    (if next
-        (funcall jump :next next)
-      (if previous
-          (funcall jump :previous previous)))))
+  (when flycheck-current-errors
+    (lexical-let*
+        ((next     (flycheck-tip-collect-current-file-errors :next))
+         (previous (unless next
+                     (flycheck-tip-collect-current-file-errors :previous)))
+         (jump (lambda (direction errors)
+                 (case direction
+                   (:next     (flycheck-next-error))
+                   (:previous (flycheck-previous-error)))
+                 (flycheck-tip-popup-error-message errors))))
+      (if next
+          (funcall jump :next next)
+        (if previous
+            (funcall jump :previous previous))))))
 
 (when flycheck-tip-avoid-show-func
   (defadvice flycheck-show-error-at-point
