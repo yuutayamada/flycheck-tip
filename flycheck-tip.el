@@ -47,18 +47,24 @@
   (interactive)
   (when flycheck-current-errors
     (lexical-let*
-        ((next     (flycheck-tip-collect-current-file-errors :next))
-         (previous (unless next
-                     (flycheck-tip-collect-current-file-errors :previous)))
-         (jump (lambda (direction errors)
+        ((errors   (flycheck-tip-collect-current-file-errors))
+         (next     (assoc-default :next         errors))
+         (previous (assoc-default :previous     errors))
+         (cur-line (assoc-default :current-line errors))
+         (jump (lambda (direction errs)
                  (case direction
-                   (:next     (flycheck-next-error))
-                   (:previous (flycheck-previous-error)))
-                 (flycheck-tip-popup-error-message errors))))
+                   (:next         (flycheck-next-error))
+                   (:previous     (flycheck-previous-error))
+                   (:current-line (beginning-of-line)
+                                  (flycheck-next-error)))
+                 (flycheck-tip-popup-error-message errs))))
+      ;; priority
       (if next
           (funcall jump :next next)
         (if previous
-            (funcall jump :previous previous))))))
+            (funcall jump :previous previous)
+          (when cur-line
+            (funcall jump :current-line cur-line)))))))
 
 (when flycheck-tip-avoid-show-func
   (defadvice flycheck-show-error-at-point
@@ -66,19 +72,25 @@
     nil))
 
 (defun flycheck-tip-collect-current-file-errors (&optional direction)
-  (loop with errors   = flycheck-current-errors
-        with next     = '()
-        with previous = '()
+  (loop with errors       = flycheck-current-errors
+        with next         = '()
+        with previous     = '()
+        with current-line = '()
         for err in errors
-        for line = (elt err 4)
-        if (and
-            (equal (expand-file-name buffer-file-truename)
-                   (elt err 3))
-            (case direction
-              (:previous (> (line-number-at-pos (point)) line))
-              (:next     (< (line-number-at-pos (point)) line))
-              (t         t)))
-        collect err))
+        for err-line = (elt err 4)
+        for c-line   = (line-number-at-pos (point))
+        if (not (equal (expand-file-name buffer-file-truename)
+                       (elt err 3)))
+        do '() ; skip
+        else if (< c-line err-line)
+        collect err into next
+        else if (> c-line err-line)
+        collect err into previous
+        else if (= c-line err-line)
+        collect err into current-line
+        finally return (list (cons :next         next)
+                             (cons :previous     previous)
+                             (cons :current-line current-line))))
 
 (defun flycheck-tip-popup-error-message (errors)
   (loop for error in errors
