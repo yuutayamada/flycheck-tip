@@ -44,6 +44,8 @@
 
 ;;;###autoload
 (defun flycheck-tip-cycle ()
+  "Move to next error if it's exists. If it wasn't exists then move to
+ previous error."
   (interactive)
   (when flycheck-current-errors
     (lexical-let*
