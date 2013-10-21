@@ -33,7 +33,7 @@
 
 (defcustom flycheck-tip-avoid-show-func t
   "Avoid `flycheck-show-error-at-point' function's behavior.
- This variable is true by default."
+This variable is true by default."
   :group 'flycheck-tip
   :type 'boolean)
 
@@ -49,8 +49,8 @@
 
 ;;;###autoload
 (defun flycheck-tip-cycle ()
-  "Move to next error if it's exists. If it wasn't exists then move to
- previous error."
+  "Move to next error if it's exists.
+If it wasn't exists then move to previous error."
   (interactive)
   (when flycheck-current-errors
     (lexical-let*
@@ -76,6 +76,7 @@
     nil))
 
 (defun flycheck-tip-collect-current-file-errors ()
+  "Collect errors from `flycheck-current-errors'."
   (loop with errors       = flycheck-current-errors
         with next         = '()
         with previous     = '()
@@ -97,6 +98,9 @@
                              (cons :current-line current-line))))
 
 (defun flycheck-tip-popup-error-message (errors)
+  "Popup error message(s) from ERRORS.
+If there are multiple errors on current line, all current line's errors are
+appered."
   (lexical-let
       ((line-errors (loop for error in errors
                           for line = (elt error 4)
