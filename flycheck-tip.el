@@ -55,7 +55,7 @@
          (cur-line (assoc-default :current-line errors))
          (jump (lambda (errs)
                  (goto-char (point-min))
-                 (forward-line (1- (elt (car errs) 4)))
+                 (forward-line (elt (car errs) 4))
                  (flycheck-tip-popup-error-message errs))))
       ;; priority
       (if next
@@ -92,7 +92,15 @@
                              (cons :current-line current-line))))
 
 (defun flycheck-tip-popup-error-message (errors)
-  (popup-tip (elt (car errors) 6)))
+  (lexical-let
+      ((line-errors (loop for error in errors
+                          for line = (elt error 4)
+                          if (equal (1- (line-number-at-pos (point)))
+                                    line)
+                          collect (elt error 6))))
+    (line-move -1 t)
+    (beginning-of-line)
+    (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*")))))
 
 (provide 'flycheck-tip)
 
