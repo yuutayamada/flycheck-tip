@@ -5,7 +5,7 @@
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/yuutayamada/flycheck-tip
 ;; Version: 0.0.1
-;; Package-Requires: ((flycheck "20131020) (popup "20130708"))
+;; Package-Requires: ((flycheck "20131020") (popup "20130708"))
 ;; Keywords: flycheck
 
 ;;; License:
