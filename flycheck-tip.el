@@ -102,11 +102,17 @@ If it wasn't exists then move to previous error."
 If there are multiple errors on current line, all current line's errors are
 appered."
   (lexical-let
-      ((line-errors (loop for error in errors
+      ((line-errors (loop with result = '()
+                          with fallback = '()
+                          for error in errors
                           for line = (elt error 4)
                           if (equal (1- (line-number-at-pos (point)))
                                     line)
-                          collect (elt error 6))))
+                          collect (elt error 6) into result
+                          else if (and (< (1- (line-number-at-pos (point))) line)
+                                       (> (+ 1 (line-number-at-pos (point))) line))
+                          collect (elt error 6) into fallback
+                          finally return (or result fallback))))
     (line-move -1 t)
     (beginning-of-line)
     (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*")))))
