@@ -48,9 +48,10 @@ This variable is true by default."
 ;; 7 : err type?
 
 ;;;###autoload
-(defun flycheck-tip-cycle ()
+(defun flycheck-tip-cycle (&optional reverse)
   "Move to next error if it's exists.
-If it wasn't exists then move to previous error."
+If it wasn't exists then move to previous error.
+Move to previous error if REVERSE is non-nil."
   (interactive)
   (when flycheck-current-errors
     (lexical-let*
@@ -62,8 +63,16 @@ If it wasn't exists then move to previous error."
                  (goto-char (point-min))
                  (forward-line (elt (car errs) 4))
                  (flycheck-tip-popup-error-message errs)))
-         (target (or next previous cur-line)))
+         (target (if (not reverse)
+                     (or next previous cur-line)
+                   (or previous next cur-line))))
       (funcall jump target))))
+
+;;;###autoload
+(defun flycheck-tip-cycle-reverse ()
+  "Do `flycheck-tip-cycle by reverse order."
+  (interactive)
+  (flycheck-tip-cycle t))
 
 (when flycheck-tip-avoid-show-func
   (defadvice flycheck-show-error-at-point
