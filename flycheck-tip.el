@@ -61,14 +61,9 @@ If it wasn't exists then move to previous error."
          (jump (lambda (errs)
                  (goto-char (point-min))
                  (forward-line (elt (car errs) 4))
-                 (flycheck-tip-popup-error-message errs))))
-      ;; priority
-      (if next
-          (funcall jump next)
-        (if previous
-            (funcall jump previous)
-          (when cur-line
-            (funcall jump cur-line)))))))
+                 (flycheck-tip-popup-error-message errs)))
+         (target (or next previous cur-line)))
+      (funcall jump target))))
 
 (when flycheck-tip-avoid-show-func
   (defadvice flycheck-show-error-at-point
