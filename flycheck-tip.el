@@ -88,8 +88,9 @@ Move to previous error if REVERSE is non-nil."
         for err in errors
         for err-line = (elt err 4)
         for c-line   = (line-number-at-pos (point))
-        if (not (equal (expand-file-name buffer-file-truename)
-                       (elt err 3)))
+        if (and buffer-file-truename ; whether file or buffer
+                (not (equal (expand-file-name buffer-file-truename)
+                            (elt err 3))))
         do '() ; skip
         else if (< c-line err-line)
         collect err into next
