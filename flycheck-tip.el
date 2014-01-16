@@ -61,7 +61,7 @@ Move to previous error if REVERSE is non-nil."
          (cur-line (assoc-default :current-line errors))
          (jump (lambda (errs)
                  (goto-char (point-min))
-                 (forward-line (elt (car errs) 4))
+                 (forward-line (1- (elt (car errs) 4)))
                  (flycheck-tip-popup-error-message errs)))
          (target (if (not reverse)
                      (or next previous cur-line)
@@ -109,17 +109,15 @@ appered."
   (lexical-let
       ((line-errors (loop with result = '()
                           with fallback = '()
+                          with current-line = (line-number-at-pos (point))
                           for error in errors
-                          for line = (elt error 4)
-                          if (equal (1- (line-number-at-pos (point)))
-                                    line)
+                          for e-line = (elt error 4)
+                          if (equal current-line e-line)
                           collect (elt error 6) into result
-                          else if (and (< (1- (line-number-at-pos (point))) line)
-                                       (> (+ 1 (line-number-at-pos (point))) line))
+                          else if (and (< (- 1 current-line) e-line)
+                                       (> (+ 1 current-line) e-line))
                           collect (elt error 6) into fallback
                           finally return (or result fallback))))
-    (line-move -1 t)
-    (beginning-of-line)
     (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*")))))
 
 (provide 'flycheck-tip)
