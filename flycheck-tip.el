@@ -65,7 +65,7 @@ Move to previous error if REVERSE is non-nil."
                  (flycheck-tip-popup-error-message errs)))
          (target (if (not reverse)
                      (or next previous cur-line)
-                   (or previous next cur-line))))
+                   (reverse (or previous next cur-line)))))
       (funcall jump target))))
 
 ;;;###autoload
