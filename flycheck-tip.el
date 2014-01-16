@@ -81,10 +81,8 @@ Move to previous error if REVERSE is non-nil."
 
 (defun flycheck-tip-collect-current-file-errors ()
   "Collect errors from `flycheck-current-errors'."
-  (loop with errors       = flycheck-current-errors
-        with next         = '()
-        with previous     = '()
-        with current-line = '()
+  (loop with errors = flycheck-current-errors
+        with next and previous and current-line
         for err in errors
         for err-line = (elt err 4)
         for c-line   = (line-number-at-pos (point))
@@ -107,8 +105,7 @@ Move to previous error if REVERSE is non-nil."
 If there are multiple errors on current line, all current line's errors are
 appered."
   (lexical-let
-      ((line-errors (loop with result = '()
-                          with fallback = '()
+      ((line-errors (loop with result and fallback
                           with current-line = (line-number-at-pos (point))
                           for error in errors
                           for e-line = (elt error 4)
