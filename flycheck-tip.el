@@ -37,6 +37,8 @@ This variable is true by default."
   :group 'flycheck-tip
   :type 'boolean)
 
+(defvar flycheck-tip-popup-object nil)
+
 ;; Error status memo
 ;; 0 : err name?
 ;; 1 : buffer
@@ -53,6 +55,7 @@ This variable is true by default."
 If it wasn't exists then move to previous error.
 Move to previous error if REVERSE is non-nil."
   (interactive)
+  (flycheck-tip-delete-popup)
   (when flycheck-current-errors
     (lexical-let*
         ((errors   (flycheck-tip-collect-current-file-errors))
@@ -115,7 +118,17 @@ appered."
                                        (> (+ 1 current-line) e-line))
                           collect (elt error 6) into fallback
                           finally return (or result fallback))))
-    (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*")))))
+    (setq flycheck-tip-popup-object
+          (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*"))
+                     :nowait t))
+    (add-hook 'pre-command-hook 'flycheck-tip-delete-popup)))
+
+(defun flycheck-tip-delete-popup ()
+  (condition-case err
+      (when (popup-live-p flycheck-tip-popup-object)
+        (popup-delete flycheck-tip-popup-object))
+    (error err))
+  (remove-hook 'pre-command-hook 'flycheck-tip-delete-popup))
 
 (provide 'flycheck-tip)
 
