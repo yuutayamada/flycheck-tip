@@ -124,6 +124,7 @@ appered."
     (add-hook 'pre-command-hook 'flycheck-tip-delete-popup)))
 
 (defun flycheck-tip-delete-popup ()
+  "Delete popup object."
   (condition-case err
       (when (popup-live-p flycheck-tip-popup-object)
         (popup-delete flycheck-tip-popup-object))
