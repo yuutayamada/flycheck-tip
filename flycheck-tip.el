@@ -124,7 +124,9 @@ appered."
                           for error in flycheck-tip-current-errors
                           for e-line = (elt error 4)
                           for e-str = (elt error 6)
-                          if (equal current-line e-line)
+                          if (or (equal current-line e-line)
+                                 (and (equal 1 current-line)
+                                      (equal 0 e-line)))
                           collect e-str into result
                           else if (and (< (- 1 current-line) e-line)
                                        (> (+ 1 current-line) e-line))
