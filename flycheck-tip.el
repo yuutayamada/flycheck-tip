@@ -123,11 +123,12 @@ appered."
                           with current-line = (line-number-at-pos (point))
                           for error in flycheck-tip-current-errors
                           for e-line = (elt error 4)
+                          for e-str = (elt error 6)
                           if (equal current-line e-line)
-                          collect (elt error 6) into result
+                          collect e-str into result
                           else if (and (< (- 1 current-line) e-line)
                                        (> (+ 1 current-line) e-line))
-                          collect (elt error 6) into fallback
+                          collect e-str into fallback
                           finally return (or result fallback))))
     (setq flycheck-tip-popup-object
           (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*"))
