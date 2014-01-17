@@ -37,7 +37,14 @@ This variable is true by default."
   :group 'flycheck-tip
   :type 'boolean)
 
+(defvar flycheck-tip-timer-delay 0.3
+  "Whether how much delay showing error popup.
+If you set nil to this variable, then do not use delay timer.")
+
+;; INTERNAL VARIABLE
 (defvar flycheck-tip-popup-object nil)
+(defvar flycheck-tip-timer-object nil)
+(defvar flycheck-tip-current-errors nil)
 
 ;; Error status memo
 ;; 0 : err name?
@@ -65,7 +72,11 @@ Move to previous error if REVERSE is non-nil."
          (jump (lambda (errs)
                  (goto-char (point-min))
                  (forward-line (1- (elt (car errs) 4)))
-                 (flycheck-tip-popup-error-message errs)))
+                 (setq flycheck-tip-current-errors errs)
+                 (if (null flycheck-tip-timer-delay)
+                     (flycheck-tip-popup-error-message)
+                   (flycheck-tip-cancel-timer)
+                   (flycheck-tip-register-timer))))
          (target (if (not reverse)
                      (or next previous cur-line)
                    (reverse (or previous next cur-line)))))
@@ -103,14 +114,14 @@ Move to previous error if REVERSE is non-nil."
                              (cons :previous     previous)
                              (cons :current-line current-line))))
 
-(defun flycheck-tip-popup-error-message (errors)
+(defun flycheck-tip-popup-error-message ()
   "Popup error message(s) from ERRORS.
 If there are multiple errors on current line, all current line's errors are
 appered."
   (lexical-let
       ((line-errors (loop with result and fallback
                           with current-line = (line-number-at-pos (point))
-                          for error in errors
+                          for error in flycheck-tip-current-errors
                           for e-line = (elt error 4)
                           if (equal current-line e-line)
                           collect (elt error 6) into result
@@ -122,6 +133,18 @@ appered."
           (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*"))
                      :nowait t))
     (add-hook 'pre-command-hook 'flycheck-tip-delete-popup)))
+
+(defun flycheck-tip-register-timer ()
+  "Register timer that show error message."
+  (setq flycheck-tip-timer-object
+        (run-with-timer flycheck-tip-timer-delay nil
+                        (lambda ()
+                          (flycheck-tip-popup-error-message)))))
+
+(defun flycheck-tip-cancel-timer ()
+  "Cancel `flycheck-tip-timer-object'."
+  (when (timerp flycheck-tip-timer-object)
+    (cancel-timer flycheck-tip-timer-object)))
 
 (defun flycheck-tip-delete-popup ()
   "Delete popup object."
