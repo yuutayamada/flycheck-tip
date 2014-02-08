@@ -88,10 +88,12 @@ Move to previous error if REVERSE is non-nil."
   (interactive)
   (flycheck-tip-cycle t))
 
-(when flycheck-tip-avoid-show-func
-  (defadvice flycheck-show-error-at-point
-    (around flycheck-tip-avoid-function activate)
-    nil))
+(defadvice flycheck-show-error-at-point
+  (around flycheck-tip-avoid-function activate)
+  "Avoid flycheck's displaying feature on echo ares if you set non-nil to `flycheck-tip-avoid-show-func'."
+  (if flycheck-tip-avoid-show-func
+      nil
+    ad-do-it))
 
 (defun flycheck-tip-collect-current-file-errors ()
   "Collect errors from `flycheck-current-errors'."
