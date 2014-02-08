@@ -159,6 +159,14 @@ appered."
     (error err))
   (remove-hook 'pre-command-hook 'flycheck-tip-delete-popup))
 
+(defun flycheck-tip-display-current-line-error-message (errors)
+  "Show current line's ERRORS by popup."
+  (interactive)
+  (lexical-let
+      ((current-line-errors (-keep #'flycheck-error-message errors)))
+    (when current-line-errors
+      (popup-tip (format "*%s" (s-join "\n*" current-line-errors))))))
+
 (provide 'flycheck-tip)
 
 ;; Local Variables:
