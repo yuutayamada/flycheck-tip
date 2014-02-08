@@ -19,6 +19,15 @@ install popup.el. Because auto-complete.el is including it.
 (define-key your-prog-mode (kbd "C-c C-n") 'flycheck-tip-cycle)
 ```
 
+If you want to show current line errors by popup instead of flycheck's
+echo area function, then configure like this:
+
+```lisp
+(setq flycheck-tip-avoid-show-func nil
+      flycheck-display-errors-function
+      'flycheck-tip-display-current-line-error-message)
+```
+
 ## Usage
 
 Do M-x flycheck-tip-cycle or push its key when error occurred on
