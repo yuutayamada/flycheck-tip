@@ -117,27 +117,30 @@ Move to previous error if REVERSE is non-nil."
                              (cons :current-line current-line))))
 
 (defun flycheck-tip-popup-error-message ()
-  "Popup error message(s) from ERRORS.
+  "Popup error message(s).
 If there are multiple errors on current line, all current line's errors are
-appered."
-  (lexical-let
-      ((line-errors (loop with result and fallback
-                          with current-line = (line-number-at-pos (point))
-                          for error in flycheck-tip-current-errors
-                          for e-line = (elt error 4)
-                          for e-str = (elt error 6)
-                          if (or (equal current-line e-line)
-                                 (and (equal 1 current-line)
-                                      (equal 0 e-line)))
-                          collect e-str into result
-                          else if (and (< (- 1 current-line) e-line)
-                                       (> (+ 1 current-line) e-line))
-                          collect e-str into fallback
-                          finally return (or result fallback))))
-    (setq flycheck-tip-popup-object
-          (popup-tip (format "*%s" (mapconcat 'identity line-errors "\n*"))
-                     :nowait t))
-    (add-hook 'pre-command-hook 'flycheck-tip-delete-popup)))
+appeared."
+  (setq flycheck-tip-popup-object
+        (popup-tip
+         (format "*%s" (mapconcat 'identity (flycheck-tip-get-errors) "\n*"))
+         :nowait t))
+  (add-hook 'pre-command-hook 'flycheck-tip-delete-popup))
+
+(defun flycheck-tip-get-errors ()
+  "Get errors."
+  (loop with result and fallback
+        with current-line = (line-number-at-pos (point))
+        for error in flycheck-tip-current-errors
+        for e-line = (elt error 4)
+        for e-str = (elt error 6)
+        if (or (equal current-line e-line)
+               (and (equal 1 current-line)
+                    (equal 0 e-line)))
+        collect e-str into result
+        else if (and (< (- 1 current-line) e-line)
+                     (> (+ 1 current-line) e-line))
+        collect e-str into fallback
+        finally return (or result fallback)))
 
 (defun flycheck-tip-register-timer ()
   "Register timer that show error message."
