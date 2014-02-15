@@ -88,7 +88,7 @@ Move to previous error if REVERSE is non-nil."
   (interactive)
   (flycheck-tip-cycle t))
 
-(defadvice flycheck-show-error-at-point
+(defadvice flycheck-display-error-at-point
   (around flycheck-tip-avoid-function activate)
   "Avoid flycheck's displaying feature on echo ares if you set non-nil to `flycheck-tip-avoid-show-func'."
   (if flycheck-tip-avoid-show-func
