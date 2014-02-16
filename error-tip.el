@@ -85,9 +85,10 @@ If you set nil to this variable, then do not use delay timer.")
         collect err into previous
         else if (= c-line err-line)
         collect err into current-line
-        finally return (list (cons :next         next)
-                             (cons :previous     previous)
-                             (cons :current-line current-line))))
+        finally return (when (or next previous current-line)
+                         (list (cons :next         next)
+                               (cons :previous     previous)
+                               (cons :current-line current-line)))))
 
 (defun error-tip-popup-error-message (errors)
   "Popup error message(s) from ERRORS.
