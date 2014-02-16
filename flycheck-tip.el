@@ -83,7 +83,12 @@ If you set nil to this variable, then do not use delay timer.")
     (case element
       (line    (elt err 4))
       (file    (elt err 3))
-      (message (elt err 6))))))
+      (message (elt err 6))))
+   ((bound-and-true-p eclim-mode)
+    (case element
+      (line    (assoc-default 'line     err))
+      (file    (assoc-default 'filename err))
+      (message (assoc-default 'message  err))))))
 
 ;;;###autoload
 (defun flycheck-tip-cycle (&optional reverse)
