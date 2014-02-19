@@ -28,6 +28,10 @@
 (eval-when-compile (require 'cl))
 (require 'popup)
 
+(autoload 'flycheck-tip-cycle "flycheck-tip")
+(autoload 'flymake-tip-cycle "flymake-tip")
+(autoload 'eclim-tip-cycle "eclim-tip")
+
 ;; INTERNAL VARIABLE
 (defvar error-tip-popup-object nil)
 (defvar error-tip-timer-object nil)
@@ -142,6 +146,20 @@ This function can catch error against flycheck, flymake and emcas-eclim."
       (bound-and-true-p flymake-err-info)
       (and (fboundp 'eclim--problems-filtered)
            (eclim--problems-filtered))))
+
+(defun error-tip-cycle-dwim (&optional reverse)
+  (interactive)
+  (cond
+   ((bound-and-true-p flycheck-mode)
+    (flycheck-tip-cycle reverse))
+   ((bound-and-true-p eclim-mode)
+    (eclim-tip-cycle reverse))
+   ((bound-and-true-p flymake-mode)
+    (flymake-tip-cycle reverse))))
+
+(defun error-tip-cycle-dwim-reverse ()
+  (interactive)
+  (error-tip-cycle-dwim t))
 
 (provide 'error-tip)
 
