@@ -135,6 +135,14 @@ appeared."
   (when (timerp error-tip-timer-object)
     (cancel-timer error-tip-timer-object)))
 
+(defun error-tip-error-p ()
+  "Return non-nil if error is occurred in current buffer.
+This function can catch error against flycheck, flymake and emcas-eclim."
+  (or (bound-and-true-p flycheck-current-errors)
+      (bound-and-true-p flymake-err-info)
+      (and (fboundp 'eclim--problems-filtered)
+           (eclim--problems-filtered))))
+
 (provide 'error-tip)
 
 ;; Local Variables:
