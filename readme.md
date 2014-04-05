@@ -23,9 +23,7 @@ If you want to show current line errors by popup instead of flycheck's
 echo area function, then configure like this:
 
 ```lisp
-(setq flycheck-tip-avoid-show-func nil
-      flycheck-display-errors-function
-      'flycheck-tip-display-current-line-error-message)
+(flycheck-tip-use-timer 'verbose)
 ```
 
 ## Usage
@@ -33,6 +31,12 @@ echo area function, then configure like this:
 Do M-x flycheck-tip-cycle or push its key when error occurred on
 flycheck-mode. Then you can move next error.
 If next error wasn't exists then move to first error if it's exists.
+
+# Show eclim's error
+
+This package also support showing eclim's error feature.
+If you want to use this feature, you can use `eclim-tip-cycle` and
+`eclim-tip-cycle-reverse` functions.
 
 # Note
 
