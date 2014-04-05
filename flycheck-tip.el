@@ -81,6 +81,25 @@ Move to previous error if REVERSE is non-nil."
     (when current-line-errors
       (popup-tip (format "*%s" (s-join "\n*" current-line-errors))))))
 
+(defun flycheck-tip-use-timer (order)
+  "You can set 'normal, 'verbose or nil to ORDER.
+The normal means, use error popup and using timer or not is configurable.
+The verbose means, use error popup and popup current-line error if it's exists
+after `error-tip-timer-delay' seconds.
+If you set nil, show popup error immediately after you invoke flycheck-tip-cycle
+or flycheck-tip-cycle-reverse."
+  (case order
+    (normal
+     (setq flycheck-tip-avoid-show-func t))
+    (verbose
+     (setq flycheck-tip-avoid-show-func nil
+           flycheck-idle-change-delay error-tip-timer-delay
+           flycheck-display-errors-function
+           'flycheck-tip-display-current-line-error-message))
+    ;; do not use timer
+    (t (setq flycheck-tip-avoid-show-func t
+             error-tip-timer-delay nil))))
+
 (provide 'flycheck-tip)
 
 ;; Local Variables:
