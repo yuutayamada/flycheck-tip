@@ -75,7 +75,7 @@ Move to previous error if REVERSE is non-nil."
 
 (defun flycheck-tip-display-current-line-error-message (errors)
   "Show current line's ERRORS by popup."
-  (interactive)
+  (error-tip-delete-popup)
   (lexical-let
       ((current-line-errors (-keep #'flycheck-error-message errors)))
     (when current-line-errors
