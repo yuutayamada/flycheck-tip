@@ -41,10 +41,10 @@ This variable is true by default."
   :group 'flycheck-tip
   :type 'boolean)
 
-;; Error status memo
+;; memo flycheck-current-errors
 ;; 0 : err name?
 ;; 1 : buffer
-;; 2 : gofmt
+;; 2 : lang
 ;; 3 : file
 ;; 4 : line
 ;; 5 : line?
