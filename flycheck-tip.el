@@ -5,7 +5,7 @@
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/yuutayamada/flycheck-tip
 ;; Version: 0.0.1
-;; Package-Requires: ((flycheck "0.13") (dash "1.2") (emacs "24.1") (popup "0.5.0"))
+;; Package-Requires: ((flycheck "0.13") (dash "1.2") (emacs "24.1") (popup "0.5.0") (s "1.9.0"))
 ;; Keywords: flycheck
 
 ;;; License:
@@ -31,6 +31,7 @@
 (require 'flycheck)
 (require 'error-tip)
 (require 'popup)
+(require 's)
 
 (defvaralias 'flycheck-tip-timer-delay 'error-tip-timer-delay
   "Alias of `error-tip-timer-delay'.")
