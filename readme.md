@@ -7,7 +7,7 @@ This program can show you error by popup-tip.
 
 ## Requirements
 
-You need flycheck and popup packages.
+You need s, flycheck, and popup packages.
 But if you are already using auto-complete.el, then you don't need
 install popup.el. Because auto-complete.el is including it.
 <!-- WIP If you can install package from MELPA ...-->
