@@ -30,11 +30,11 @@ echo area function, then configure like this:
 
 Do M-x flycheck-tip-cycle or push its key when error occurred on
 flycheck-mode. Then you can move next error.
-If next error wasn't exists then move to first error if it's exists.
+If next error isn't exists then the cursor moves to first error if it's exists.
 
 # Show eclim's error
 
-This package also support showing eclim's error feature.
+This package also supports showing eclim's error feature.
 If you want to use this feature, you can use `eclim-tip-cycle` and
 `eclim-tip-cycle-reverse` functions.
 
