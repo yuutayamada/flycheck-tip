@@ -39,6 +39,8 @@
 (defvar error-tip-timer-delay 0.3
   "Whether how much delay showing error popup.
 If you set nil to this variable, then do not use delay timer.")
+(defvar error-tip-newline-character nil
+  "Use this variable if you want change specific characters to turn to newlines.")
 
 (defun error-tip-cycle (errors &optional reverse)
   (error-tip-delete-popup)
@@ -99,9 +101,15 @@ If you set nil to this variable, then do not use delay timer.")
 If there are multiple errors on current line, all current line's errors are
 appeared."
   (setq error-tip-popup-object
-        (popup-tip
-         (format "*%s" (mapconcat 'identity errors "\n*")) :nowait t))
+        (popup-tip (error-tip-format errors) :nowait t))
   (add-hook 'pre-command-hook 'error-tip-delete-popup))
+
+(defun error-tip-format (errors)
+  "Format ERRORS."
+  (lexical-let ((messages (format "*%s" (mapconcat 'identity errors "\n*"))))
+    (if error-tip-newline-character
+        (replace-regexp-in-string error-tip-newline-character "\n" messages)
+      messages)))
 
 (defun error-tip-get-errors ()
   "Get errors."
