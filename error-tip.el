@@ -1,4 +1,4 @@
-;;; error-tip.el --- showing error library by popup.el
+;;; error-tip.el --- showing error library by popup.el -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 by Yuta Yamada
 
@@ -25,7 +25,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(require 'cl-lib)
 (require 'popup)
 
 (autoload 'flycheck-tip-cycle "flycheck-tip")
@@ -45,7 +45,7 @@ If you set nil to this variable, then do not use delay timer.")
 (defun error-tip-cycle (errors &optional reverse)
   (error-tip-delete-popup)
   (when errors
-    (lexical-let*
+    (let*
         ((next     (assoc-default :next         errors))
          (previous (assoc-default :previous     errors))
          (cur-line (assoc-default :current-line errors))
@@ -65,36 +65,35 @@ If you set nil to this variable, then do not use delay timer.")
 (defun error-tip-get (err element)
   (cond
    ((bound-and-true-p flycheck-mode)
-    (case element
+    (cl-case element
       (line    (elt err 4))
       (file    (elt err 3))
       (message (elt err 6))))
    ((bound-and-true-p eclim-mode)
-    (case element
+    (cl-case element
       (line    (assoc-default 'line     err))
       (file    (assoc-default 'filename err))
       (message (assoc-default 'message  err))))))
 
 (defun error-tip-collect-current-file-errors (errors)
   "Collect errors from ERRORS."
-  (loop with c-line = (line-number-at-pos (point))
-        with next and previous and current-line
-        for err in errors
-        for err-line = (error-tip-get err 'line)
-        if (and buffer-file-truename ; whether file or buffer
-                (not (equal (expand-file-name buffer-file-truename)
-                            (error-tip-get err 'file))))
-        do '() ; skip
-        else if (< c-line err-line)
-        collect err into next
-        else if (> c-line err-line)
-        collect err into previous
-        else if (= c-line err-line)
-        collect err into current-line
-        finally return (when (or next previous current-line)
-                         (list (cons :next         next)
-                               (cons :previous     previous)
-                               (cons :current-line current-line)))))
+  (cl-loop with c-line = (line-number-at-pos (point))
+           for err in errors
+           for err-line = (error-tip-get err 'line)
+           if (and buffer-file-truename ; whether file or buffer
+                   (not (equal (expand-file-name buffer-file-truename)
+                               (error-tip-get err 'file))))
+           do '() ; skip
+           else if (< c-line err-line)
+           collect err into next
+           else if (> c-line err-line)
+           collect err into previous
+           else if (= c-line err-line)
+           collect err into current-line
+           finally return (when (or next previous current-line)
+                            (list (cons :next         next)
+                                  (cons :previous     previous)
+                                  (cons :current-line current-line)))))
 
 (defun error-tip-popup-error-message (errors)
   "Popup error message(s) from ERRORS.
@@ -106,26 +105,26 @@ appeared."
 
 (defun error-tip-format (errors)
   "Format ERRORS."
-  (lexical-let ((messages (format "*%s" (mapconcat 'identity errors "\n*"))))
+  (let ((messages (format "*%s" (mapconcat 'identity errors "\n*"))))
     (if error-tip-newline-character
         (replace-regexp-in-string error-tip-newline-character "\n" messages)
       messages)))
 
 (defun error-tip-get-errors ()
   "Get errors."
-  (loop with result and fallback
-        with current-line = (line-number-at-pos (point))
-        for error in error-tip-current-errors
-        for e-line = (error-tip-get error 'line)
-        for e-str  = (error-tip-get error 'message)
-        if (or (equal current-line e-line)
-               (and (equal 1 current-line)
-                    (equal 0 e-line)))
-        collect e-str into result
-        else if (and (< (- 1 current-line) e-line)
-                     (> (+ 1 current-line) e-line))
-        collect e-str into fallback
-        finally return (or result fallback)))
+  (cl-loop ;; with result and fallback
+           with current-line = (line-number-at-pos (point))
+           for error in error-tip-current-errors
+           for e-line = (error-tip-get error 'line)
+           for e-str  = (error-tip-get error 'message)
+           if (or (equal current-line e-line)
+                  (and (equal 1 current-line)
+                       (equal 0 e-line)))
+           collect e-str into result
+           else if (and (< (- 1 current-line) e-line)
+                        (> (+ 1 current-line) e-line))
+           collect e-str into fallback
+           finally return (or result fallback)))
 
 (defun error-tip-delete-popup ()
   "Delete popup object."

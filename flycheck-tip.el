@@ -1,4 +1,4 @@
-;;; flycheck-tip.el --- show flycheck's error by popup-tip
+;;; flycheck-tip.el --- show flycheck's error by popup-tip -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013 by Yuta Yamada
 
@@ -27,7 +27,7 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(require 'cl-lib)
 (require 'flycheck)
 (require 'error-tip)
 (require 'popup)
@@ -77,8 +77,7 @@ Move to previous error if REVERSE is non-nil."
 (defun flycheck-tip-display-current-line-error-message (errors)
   "Show current line's ERRORS by popup."
   (error-tip-delete-popup)
-  (lexical-let
-      ((current-line-errors (-keep #'flycheck-error-message errors)))
+  (let ((current-line-errors (-keep #'flycheck-error-message errors)))
     (when current-line-errors
       (popup-tip (format "*%s" (s-join "\n*" current-line-errors))))))
 
@@ -89,7 +88,7 @@ The verbose means, use error popup and popup current-line error if it's exists
 after `error-tip-timer-delay' seconds.
 If you set nil, show popup error immediately after you invoke flycheck-tip-cycle
 or flycheck-tip-cycle-reverse."
-  (case order
+  (cl-case order
     (normal
      (setq flycheck-tip-avoid-show-func t))
     (verbose

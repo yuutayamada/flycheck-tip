@@ -1,4 +1,4 @@
-;;; flymake-tip.el --- show flymake's error by popup-tip
+;;; flymake-tip.el --- show flymake's error by popup-tip -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2014 by Yuta Yamada
 
@@ -24,7 +24,6 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
 (require 'error-tip)
 (require 'flymake)
 (require 'cl-lib)
