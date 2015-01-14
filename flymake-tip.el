@@ -28,15 +28,15 @@
 (eval-when-compile (require 'cl))
 (require 'error-tip)
 (require 'flymake)
+(require 'cl-lib)
 
 (defun flymake-tip-collect-current-line-errors ()
   (interactive)
-  (lexical-let*
-      ((current-line (flymake-current-line-no))
-       (line-err-info-list
-        (nth 0 (flymake-find-err-info flymake-err-info current-line)))
-       (menu-data (flymake-make-err-menu-data current-line line-err-info-list)))
-    (loop for (err . b) in (cadr menu-data) collect err)))
+  (cl-loop with line-err-info = (flymake-find-err-info
+                                 flymake-err-info (line-number-at-pos))
+           for err in (car line-err-info)
+           if (vectorp err)
+           collect (elt err 4)))
 
 (defun flymake-tip-cycle (reverse)
   (interactive)
