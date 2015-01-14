@@ -26,6 +26,14 @@ echo area function, then configure like this:
 (flycheck-tip-use-timer 'verbose)
 ```
 
+If you are still using flymake like me, you can use combined function that
+show error by popup in flymake-mode or flycheck-mode.
+
+```lisp
+(define-key global-map (kbd "C-0") 'error-tip-cycle-dwim)
+(define-key global-map (kbd "C-9") 'error-tip-cycle-dwim-reverse)
+```
+
 ## Usage
 
 Do M-x flycheck-tip-cycle or push its key when error occurred on

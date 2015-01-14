@@ -1,11 +1,10 @@
-;;; flymake-tip.el ---
+;;; flymake-tip.el --- show flymake's error by popup-tip
 
 ;; Copyright (C) 2014 by Yuta Yamada
 
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/yuutayamada/
 ;; Version: 0.0.1
-;; Package-Requires: ((package "version-number"))
 ;; Keywords: keyword
 
 ;;; License:
