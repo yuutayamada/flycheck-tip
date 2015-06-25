@@ -74,13 +74,6 @@ Move to previous error if REVERSE is non-nil."
       nil
     ad-do-it))
 
-(defun flycheck-tip-display-current-line-error-message (errors)
-  "Show current line's ERRORS by popup."
-  (error-tip-delete-popup)
-  (let ((current-line-errors (-keep #'flycheck-error-message errors)))
-    (when current-line-errors
-      (popup-tip (format "*%s" (s-join "\n*" current-line-errors))))))
-
 (defun flycheck-tip-use-timer (order)
   "You can set 'normal, 'verbose or nil to ORDER.
 The normal means, use error popup and using timer or not is configurable.
