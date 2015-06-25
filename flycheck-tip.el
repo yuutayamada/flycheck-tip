@@ -23,8 +23,17 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; see readme.md
+;; Usage:
+;; Basic setting
+;;
+;;   (require 'flycheck-tip)
+;;   (define-key your-prog-mode (kbd "C-c C-n") 'flycheck-tip-cycle)
 
+;; If you are still using flymake, you can use combined function that
+;; show error by popup in flymake-mode or flycheck-mode.
+;;
+;;   (define-key global-map (kbd "C-0") 'error-tip-cycle-dwim)
+;;   (define-key global-map (kbd "C-9") 'error-tip-cycle-dwim-reverse)
 ;;; Code:
 
 (require 'cl-lib)
