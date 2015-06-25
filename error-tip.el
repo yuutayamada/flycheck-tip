@@ -100,8 +100,12 @@ If you set nil to this variable, then do not use delay timer.")
 If there are multiple errors on current line, all current line's errors are
 appeared."
   (setq error-tip-popup-object
-        (popup-tip (error-tip-format errors) :nowait t))
+        (popup-tip (error-tip-format errors) :nowait t :point (error-tip-get-point)))
   (add-hook 'pre-command-hook 'error-tip-delete-popup))
+
+(defun error-tip-get-point ()
+  "Return point where the popup message emerges."
+  (1+ (point-at-bol)))
 
 (defun error-tip-format (errors)
   "Format ERRORS."
