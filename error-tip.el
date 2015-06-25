@@ -112,8 +112,7 @@ appeared."
 
 (defun error-tip-get-errors ()
   "Get errors."
-  (cl-loop ;; with result and fallback
-           with current-line = (line-number-at-pos (point))
+  (cl-loop with current-line = (line-number-at-pos (point))
            for error in error-tip-current-errors
            for e-line = (error-tip-get error 'line)
            for e-str  = (error-tip-get error 'message)
