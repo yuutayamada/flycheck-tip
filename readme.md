@@ -37,6 +37,13 @@ Do M-x flycheck-tip-cycle or push its key when error occurred on
 flycheck-mode. Then you can move next error.
 If next error isn't exists then the cursor moves to first error if it's exists.
 
+# Keep errors on notification area
+If you build Emacs with D-Bus option, you may configure following setting.
+This keeps the errors on notification area. Please check
+`error-tip-notify-timeout` to change limit of the timeout as well.
+
+    (setq error-tip-notify-keep-messages t)
+
 # Show eclim's error
 
 This package also supports showing eclim's error feature.
