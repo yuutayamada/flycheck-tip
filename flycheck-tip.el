@@ -1,4 +1,4 @@
-;;; flycheck-tip.el --- show flycheck's error by popup-tip -*- lexical-binding: t; -*-
+;;; flycheck-tip.el --- Show flycheck/flymake errors by tooltip -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2013 by Yuta Yamada
 
