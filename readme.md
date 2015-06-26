@@ -53,3 +53,6 @@ to your .emacs:
 ```lisp
 (setq flycheck-tip-avoid-show-func nil)
 ```
+
+# Similar Project
+flycheck-pos-tip: https://github.com/flycheck/flycheck-pos-tip
