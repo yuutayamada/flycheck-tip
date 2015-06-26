@@ -39,7 +39,6 @@
 (require 'cl-lib)
 (require 'flycheck)
 (require 'error-tip)
-(require 'popup)
 
 (defvaralias 'flycheck-tip-timer-delay 'error-tip-timer-delay
   "Alias of `error-tip-timer-delay'.")
