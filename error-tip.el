@@ -27,10 +27,21 @@
 
 (require 'cl-lib)
 (require 'popup)
+(require 'notifications) ; this introduced from Emacs 24
 
 (autoload 'flycheck-tip-cycle "flycheck-tip")
 (autoload 'flymake-tip-cycle "flymake-tip")
 (autoload 'eclim-tip-cycle "eclim-tip")
+
+(defvar error-tip-notify-keep-messages nil
+  "If the value is non-nil, keep error messages to notification area.
+This feature only activates when you leave from popup's message.")
+
+(defvar error-tip-notify-last-notification nil
+  "Last notification id.")
+
+(defvar error-tip-notify-timeout (* 60 1000)
+  "Value for time out.  The default value is 1 minute.")
 
 ;; INTERNAL VARIABLE
 (defvar error-tip-popup-object nil)
@@ -133,7 +144,8 @@ appeared."
   "Delete popup object."
   (condition-case err
       (when (popup-live-p error-tip-popup-object)
-        (popup-delete error-tip-popup-object))
+        (popup-delete error-tip-popup-object)
+        (when error-tip-notify-keep-messages (error-tip-notify)))
     (error err))
   (remove-hook 'pre-command-hook 'error-tip-delete-popup))
 
@@ -170,6 +182,18 @@ This function can catch error against flycheck, flymake and emcas-eclim."
 (defun error-tip-cycle-dwim-reverse ()
   (interactive)
   (error-tip-cycle-dwim t))
+
+;; Show errors by using notifications.el(D-Bus)
+(defun error-tip-notify ()
+  "Keep ERROR-MESSAGES on notification area.
+See also ‘error-tip-notify-keep-messages’"
+  (setq error-tip-notify-last-notification
+        (notifications-notify
+         :title "flycheck-tip"
+         :body  (format "%s" (error-tip-format (error-tip-get-errors)))
+         :category "im.error"
+         :replaces-id error-tip-notify-last-notification
+         :timeout error-tip-notify-timeout)))
 
 (provide 'error-tip)
 
