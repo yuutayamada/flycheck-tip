@@ -4,9 +4,8 @@
 
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/yuutayamada/flycheck-tip
-;; Version: 0.0.1
+;; Version: 0.5.0
 ;; Package-Requires: ((emacs "24.1") (popup "0.5.0"))
-;; Keywords: keyword
 
 ;;; License:
 ;; This program is free software: you can redistribute it and/or modify

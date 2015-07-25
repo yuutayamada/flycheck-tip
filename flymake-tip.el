@@ -3,9 +3,10 @@
 ;; Copyright (C) 2014 by Yuta Yamada
 
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
-;; URL: https://github.com/yuutayamada/
-;; Version: 0.0.1
-;; Keywords: keyword
+;; URL: https://github.com/yuutayamada/flycheck-tip
+;; Version: 0.5.0
+;; Package-Requires: ((emacs "24.1"))
+;; Keywords: flymake
 
 ;;; License:
 ;; This program is free software: you can redistribute it and/or modify
