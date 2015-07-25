@@ -36,6 +36,7 @@
            if (vectorp err)
            collect (elt err 4)))
 
+;;;###autoload
 (defun flymake-tip-cycle (reverse)
   (interactive)
   (if reverse
@@ -44,6 +45,7 @@
   (error-tip-popup-error-message
    (flymake-tip-collect-current-line-errors)))
 
+;;;###autoload
 (defun flymake-tip-cycle-reverse ()
   (interactive)
   (flymake-tip-cycle t))

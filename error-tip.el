@@ -169,6 +169,7 @@ This function can catch error against flycheck, flymake and emcas-eclim."
       (and (fboundp 'eclim--problems-filtered)
            (eclim--problems-filtered))))
 
+;;;###autoload
 (defun error-tip-cycle-dwim (&optional reverse)
   (interactive)
   (cond
@@ -179,6 +180,7 @@ This function can catch error against flycheck, flymake and emcas-eclim."
    ((bound-and-true-p flymake-mode)
     (flymake-tip-cycle reverse))))
 
+;;;###autoload
 (defun error-tip-cycle-dwim-reverse ()
   (interactive)
   (error-tip-cycle-dwim t))
