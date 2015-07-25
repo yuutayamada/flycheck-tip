@@ -29,10 +29,6 @@
 (require 'popup)
 (require 'notifications) ; this introduced from Emacs 24
 
-(autoload 'flycheck-tip-cycle "flycheck-tip")
-(autoload 'flymake-tip-cycle "flymake-tip")
-(autoload 'eclim-tip-cycle "eclim-tip")
-
 (defvar error-tip-notify-keep-messages nil
   "If the value is non-nil, keep error messages to notification area.
 This feature only activates when you leave from popup's message.")
