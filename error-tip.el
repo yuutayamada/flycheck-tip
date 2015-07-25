@@ -167,6 +167,10 @@ This function can catch error against flycheck, flymake and emcas-eclim."
 
 ;;;###autoload
 (defun error-tip-cycle-dwim (&optional reverse)
+  "Showing error function.
+This function switches proper error showing function by context.
+ (whether flycheck or flymake) The REVERSE option jumps by inverse if
+the value is non-nil."
   (interactive)
   (let ((func (cond
                ((bound-and-true-p flycheck-mode)
@@ -179,6 +183,7 @@ This function can catch error against flycheck, flymake and emcas-eclim."
 
 ;;;###autoload
 (defun error-tip-cycle-dwim-reverse ()
+  "Same as ‘error-tip-cycle-dwim’, but it jumps to inverse direction."
   (interactive)
   (error-tip-cycle-dwim t))
 
