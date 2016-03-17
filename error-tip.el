@@ -83,8 +83,10 @@ If you set nil to this variable, then do not use delay timer.")
   (cond
    ((bound-and-true-p flycheck-mode)
     (cl-case element
+      (file    (let ((buf (elt err 1)))
+                 (or (and buf (buffer-file-name buf))
+                     (elt err 3))))
       (line    (elt err 4))
-      (file    (elt err 3))
       (message (elt err 6))))
    ((bound-and-true-p eclim-mode)
     (cl-case element
