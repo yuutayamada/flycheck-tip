@@ -117,7 +117,9 @@ If you set nil to this variable, then do not use delay timer.")
 If there are multiple errors on current line, all current line's errors are
 appeared.  The POINT arg is a point to show up error(s)."
   (setq error-tip-popup-object
-        (popup-tip (error-tip-format errors) :nowait t :point (or point (error-tip-get-point))))
+        (popup-tip
+         (error-tip-format errors)
+         :nowait t :point (or point (error-tip-get-point))))
   (add-hook 'pre-command-hook 'error-tip-delete-popup))
 
 (defun error-tip-get-point ()
@@ -158,9 +160,10 @@ appeared.  The POINT arg is a point to show up error(s)."
 (defun error-tip-register-timer ()
   "Register timer that show error message."
   (setq error-tip-timer-object
-        (run-with-timer error-tip-timer-delay nil
-                        (lambda ()
-                          (error-tip-popup-error-message (error-tip-get-errors))))))
+        (run-with-timer
+         error-tip-timer-delay nil
+         (lambda ()
+           (error-tip-popup-error-message (error-tip-get-errors))))))
 
 (defun error-tip-cancel-timer ()
   "Cancel `error-tip-timer-object'."
@@ -202,15 +205,17 @@ the value is non-nil."
   "Keep ERROR-MESSAGES on notification area.
 See also ‘error-tip-notify-keep-messages’"
   (setq error-tip-notify-last-notification
-        (apply `((lambda ()
-                   (notifications-notify
-                    ,@(and error-tip-notify-parametors)
-                    :body ,(format "%s" (error-tip-format
-                                         (if (cl-struct-p (car error-tip-current-errors))
-                                             (error-tip-get-errors)
-                                           error-tip-current-errors)))
-                    :replaces-id error-tip-notify-last-notification
-                    :timeout error-tip-notify-timeout))))))
+        (apply
+         `((lambda ()
+             (notifications-notify
+              ,@(and error-tip-notify-parametors)
+              :body ,(format "%s"
+                             (error-tip-format
+                              (if (cl-struct-p (car error-tip-current-errors))
+                                  (error-tip-get-errors)
+                                error-tip-current-errors)))
+              :replaces-id error-tip-notify-last-notification
+              :timeout error-tip-notify-timeout))))))
 
 (provide 'error-tip)
 
