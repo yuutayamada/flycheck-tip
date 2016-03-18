@@ -58,9 +58,11 @@ Example:
 If you set nil to this variable, then do not use delay timer.")
 (defvar error-tip-newline-character nil
   "Use this variable if you want change specific characters to turn to newlines.")
+(defvar error-tip-state nil)
 
 (defun error-tip-cycle (errors &optional reverse)
   (error-tip-delete-popup)
+  (setq error-tip-state nil)
   (when errors
     (let*
         ((next     (assoc-default :next         errors))
@@ -69,6 +71,9 @@ If you set nil to this variable, then do not use delay timer.")
          (jump (lambda (errs)
                  (goto-char (point-min))
                  (forward-line (1- (error-tip-get (car errs) 'line)))
+                 (when (and (eobp) (eq (point-at-bol) (point)))
+                   (push (cons 'eob (line-number-at-pos)) error-tip-state)
+                   (forward-line -1))
                  (setq error-tip-current-errors errs)
                  (if (null error-tip-timer-delay)
                      (error-tip-popup-error-message (error-tip-get-errors))
@@ -143,8 +148,14 @@ appeared.  The POINT arg is a point to show up error(s)."
                   (and (equal 1 current-line)
                        (equal 0 e-line)))
            collect e-str into result
-           else if (and (< (- 1 current-line) e-line)
-                        (> (+ 1 current-line) e-line))
+           else if (or
+                    (and (< (- 1 current-line) e-line)
+                         (> (+ 1 current-line) e-line))
+                    ;; Fix #11
+                    (let ((line-eob (assoc-default 'eob error-tip-state)))
+                      (and line-eob
+                           (eq (1- line-eob) current-line)
+                           (eq e-line line-eob))))
            collect e-str into fallback
            finally return (or result fallback)))
 
