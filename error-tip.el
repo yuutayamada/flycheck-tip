@@ -70,7 +70,8 @@ If you set nil to this variable, then do not use delay timer.")
          (cur-line (assoc-default :current-line errors))
          (jump (lambda (errs)
                  (goto-char (point-min))
-                 (forward-line (1- (error-tip-get (car errs) 'line)))
+                 (unless (line-move (1- (error-tip-get (car errs) 'line)) t)
+                   (push (cons 'eob (line-number-at-pos)) error-tip-state))
                  (setq error-tip-current-errors errs)
                  (if (null error-tip-timer-delay)
                      (error-tip-popup-error-message (error-tip-get-errors))
@@ -150,7 +151,10 @@ appeared.  The POINT arg is a point to show up error(s)."
                        (equal 0 e-line)))
            collect e-str into result
            else if (or (and (< (- 1 current-line) e-line)
-                            (> (+ 1 current-line) e-line)))
+                            (> (+ 1 current-line) e-line))
+                       ;; #12
+                       (let ((line-eob (assoc-default 'eob error-tip-state)))
+                         (and line-eob (<= line-eob e-line))))
            collect e-str into fallback
            finally return (or result fallback)))
 
