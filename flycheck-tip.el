@@ -1,11 +1,11 @@
 ;;; flycheck-tip.el --- Show flycheck/flymake errors by tooltip -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2013 by Yuta Yamada
+;; Copyright (C) 2016 by Yuta Yamada
 
 ;; Author: Yuta Yamada <cokesboy"at"gmail.com>
 ;; URL: https://github.com/yuutayamada/flycheck-tip
 ;; Version: 0.5.0
-;; Package-Requires: ((flycheck "0.13") (emacs "24.1") (popup "0.5.0"))
+;; Package-Requires: ((flycheck "29") (emacs "24.1") (popup "0.5.0"))
 ;; Keywords: flycheck
 
 ;;; License:
@@ -49,11 +49,6 @@
 (defvaralias 'flycheck-tip-timer-delay 'error-tip-timer-delay
   "Alias of `error-tip-timer-delay'.")
 
-(defcustom flycheck-tip-avoid-show-func t
-  "Avoid `flycheck-show-error-at-point' function's behavior.
-This variable is true by default."
-  :group 'flycheck-tip
-  :type 'boolean)
 
 ;; memo flycheck-current-errors
 ;; 0 : err name?
@@ -80,12 +75,6 @@ Move to previous error if REVERSE is non-nil."
   (interactive)
   (flycheck-tip-cycle t))
 
-(defadvice flycheck-display-error-at-point
-  (around flycheck-tip-avoid-function activate)
-  "Avoid flycheck's displaying feature on echo ares if you set non-nil to `flycheck-tip-avoid-show-func'."
-  (if flycheck-tip-avoid-show-func
-      nil
-    ad-do-it))
 
 (defun flycheck-tip-use-timer (order)
   "You can set 'normal, 'verbose or nil to ORDER.
@@ -96,15 +85,14 @@ If you set nil, show popup error immediately after you invoke flycheck-tip-cycle
 or flycheck-tip-cycle-reverse."
   (cl-case order
     (normal
-     (setq flycheck-tip-avoid-show-func t))
+     (setq flycheck-display-errors-function 'ignore))
     (verbose
-     (setq flycheck-tip-avoid-show-func nil
-           flycheck-idle-change-delay error-tip-timer-delay
+     (setq flycheck-idle-change-delay error-tip-timer-delay
            flycheck-display-errors-function
            'flycheck-tip-display-current-line-error-message))
     ;; do not use timer
-    (t (setq flycheck-tip-avoid-show-func t
-             error-tip-timer-delay nil))))
+    (t (setq flycheck-display-errors-function 'ignore)
+       (setq error-tip-timer-delay nil))))
 
 (defun flycheck-tip-display-current-line-error-message (errors)
   "Show current line's ERRORS by popup.
