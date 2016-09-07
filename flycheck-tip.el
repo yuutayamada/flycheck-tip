@@ -95,11 +95,10 @@ This variable is true by default."
   :type 'boolean)
 
 (define-obsolete-variable-alias
-  'flycheck-tip-avoid-show-func 'ignore
-  "2017/9/30"
-  "Please set ‘flycheck-display-errors-function’ to ‘ignore’ if
+  'flycheck-tip-avoid-show-func 'flycheck-tip-avoid-show-func
+  "2017/9/30: Please set ‘flycheck-display-errors-function’ to ‘ignore’ if
 you want to avoid echoing error message instead of this
-value. Maybe this variable will be deleted on the future release.")
+value. This variable will be deleted on the future release.")
 
 (defun flycheck-tip-use-timer (order)
   "You can set 'normal, 'verbose or nil to ORDER.
@@ -119,8 +118,8 @@ or flycheck-tip-cycle-reverse."
     (t (setq flycheck-display-errors-function 'ignore)
        (setq error-tip-timer-delay nil))))
 
-(define-obsolete-function-alias 'flycheck-tip-use-timer 'ignore "2017/9/30"
-  "This function become obsolete in favor of official flycheck-pos-tip package.
+(define-obsolete-function-alias 'flycheck-tip-use-timer 'ignore
+  "2017/9/30: This function become obsolete in favor of official flycheck-pos-tip package.
 Please use that instead if you want just to show error messages at point by popup.")
 
 (provide 'flycheck-tip)
