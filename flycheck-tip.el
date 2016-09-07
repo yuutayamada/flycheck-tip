@@ -49,7 +49,6 @@
 (defvaralias 'flycheck-tip-timer-delay 'error-tip-timer-delay
   "Alias of `error-tip-timer-delay'.")
 
-
 ;; memo flycheck-current-errors
 ;; 0 : err name?
 ;; 1 : buffer
@@ -75,6 +74,31 @@ Move to previous error if REVERSE is non-nil."
   (interactive)
   (flycheck-tip-cycle t))
 
+(defun flycheck-tip-display-current-line-error-message (errors)
+  "Show current line's ERRORS by popup.
+This function is used to replace ‘flycheck-display-errors-function’."
+  (error-tip-delete-popup)
+  (let ((current-line-errors (mapcar #'flycheck-error-message errors))
+        ;; prevents frequently notification update
+        (error-tip-notify-keep-messages nil))
+    (when current-line-errors
+      (setq error-tip-current-errors current-line-errors)
+      (error-tip-popup-error-message current-line-errors (point)))))
+
+;;;;;;;;;;;;;
+;; Obsolete
+(defcustom flycheck-tip-avoid-show-func t
+  "Avoid `flycheck-show-error-at-point' function's behavior.
+This variable is true by default."
+  :group 'flycheck-tip
+  :type 'boolean)
+
+(define-obsolete-variable-alias
+  'flycheck-tip-avoid-show-func 'ignore
+  "2017/9/30"
+  "Please set ‘flycheck-display-errors-function’ to ‘ignore’ if
+you want to avoid echoing error message instead of this
+value. Maybe this variable will be deleted on the future release.")
 
 (defun flycheck-tip-use-timer (order)
   "You can set 'normal, 'verbose or nil to ORDER.
@@ -94,16 +118,9 @@ or flycheck-tip-cycle-reverse."
     (t (setq flycheck-display-errors-function 'ignore)
        (setq error-tip-timer-delay nil))))
 
-(defun flycheck-tip-display-current-line-error-message (errors)
-  "Show current line's ERRORS by popup.
-This function is used to replace ‘flycheck-display-errors-function’."
-  (error-tip-delete-popup)
-  (let ((current-line-errors (mapcar #'flycheck-error-message errors))
-        ;; prevents frequently notification update
-        (error-tip-notify-keep-messages nil))
-    (when current-line-errors
-      (setq error-tip-current-errors current-line-errors)
-      (error-tip-popup-error-message current-line-errors (point)))))
+(define-obsolete-function-alias 'flycheck-tip-use-timer 'ignore "2017/9/30"
+  "This function become obsolete in favor of official flycheck-pos-tip package.
+Please use that instead if you want just to show error messages at point by popup.")
 
 (provide 'flycheck-tip)
 
