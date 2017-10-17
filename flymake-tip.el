@@ -28,14 +28,27 @@
 (require 'error-tip)
 (require 'flymake)
 (require 'cl-lib)
+(require 'flymake)
 
-(defun flymake-tip-collect-current-line-errors ()
-  (interactive)
-  (cl-loop with line-err-info = (flymake-find-err-info
-                                 flymake-err-info (line-number-at-pos))
-           for err in (car line-err-info)
-           if (vectorp err)
-           collect (elt err 4)))
+(cond
+ ((version<= "26" (number-to-string emacs-major-version))
+  (defun flymake-tip-get-diag-text-on-line ()
+    "Return list of string of error/warning info on the current line."
+    (cl-loop for ov in (flymake--overlays :beg (point-at-bol) :end (point-at-eol))
+             collect (flymake--diag-text (overlay-get ov 'flymake--diagnostic)))))
+ ;; Old implementation for emacs-major-version < 26
+ ((fboundp 'flymake-find-err-info)
+  (defun flymake-tip-get-error-info-on-line-old ()
+    (cl-loop with line-err-info = (flymake-find-err-info
+                                   (bound-and-true-p flyamke-err-info) (line-number-at-pos))
+             for err in (car line-err-info)
+             if (vectorp err)
+             collect (elt err 4)))))
+
+(defvar flymake-tip--err-info-function
+  (if (version<= "26" (number-to-string emacs-major-version))
+      'flymake-tip-get-diag-text-on-line
+    'flymake-tip-get-error-info-on-line-old))
 
 ;;;###autoload
 (defun flymake-tip-cycle (reverse)
@@ -44,7 +57,7 @@
       (flymake-goto-prev-error)
     (flymake-goto-next-error))
   (error-tip-popup-error-message
-   (flymake-tip-collect-current-line-errors)))
+   (funcall flymake-tip--err-info-function)))
 
 ;;;###autoload
 (defun flymake-tip-cycle-reverse ()
