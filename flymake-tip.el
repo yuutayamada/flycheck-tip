@@ -30,32 +30,36 @@
 (require 'cl-lib)
 (require 'flymake)
 
-(cond
- ((version<= "26" (number-to-string emacs-major-version))
-  (defun flymake-tip-get-diag-text-on-line ()
-    "Return list of string of error/warning info on the current line."
-    (cl-loop for ov in (flymake--overlays :beg (point-at-bol) :end (point-at-eol))
-             collect (flymake--diag-text (overlay-get ov 'flymake--diagnostic)))))
- ;; Old implementation for emacs-major-version < 26
- ((fboundp 'flymake-find-err-info)
-  (defun flymake-tip-get-error-info-on-line-old ()
-    (cl-loop with line-err-info = (flymake-find-err-info
-                                   (bound-and-true-p flyamke-err-info) (line-number-at-pos))
-             for err in (car line-err-info)
-             if (vectorp err)
-             collect (elt err 4)))))
-
 (defvar flymake-tip--err-info-function
-  (if (version<= "26" (number-to-string emacs-major-version))
-      'flymake-tip-get-diag-text-on-line
-    'flymake-tip-get-error-info-on-line-old))
+  (cond
+   ((version<= "26" (number-to-string emacs-major-version))
+    '(lambda ()
+       ;; Return list of string of error/warning info on the current cursor
+       (cl-loop
+        for ov in (flymake--overlays :beg (point-at-bol) :end (point-at-eol))
+        collect (flymake--diag-text (overlay-get ov 'flymake--diagnostic)))))
+
+   ((fboundp 'flymake-find-err-info)
+    '(lambda ()
+       ;; Old implementation for emacs-major-version < 26
+       (cl-loop
+        with errors = (flymake-find-err-info flyamke-err-info (line-number-at-pos))
+        for err in (car errors)
+        if (vectorp err)
+        collect (elt err 4))))))
 
 ;;;###autoload
 (defun flymake-tip-cycle (reverse)
   (interactive)
-  (if reverse
-      (flymake-goto-prev-error)
-    (flymake-goto-next-error))
+  (let ((jump (lambda ()
+                (if reverse
+                    (flymake-goto-prev-error)
+                  (flymake-goto-next-error)))))
+    (let ((line (line-number-at-pos)))
+      (funcall jump)
+      (when (eq line (line-number-at-pos))
+        (goto-char (if reverse (point-at-bol) (point-at-eol)))
+        (funcall jump))))
   (error-tip-popup-error-message
    (funcall flymake-tip--err-info-function)))
 
