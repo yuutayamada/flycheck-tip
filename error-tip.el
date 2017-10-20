@@ -86,8 +86,8 @@ If you set nil to this variable, then do not use delay timer.")
       (funcall jump target))))
 
 (defun error-tip-get (err element)
-  ((bound-and-true-p flycheck-mode)
-   (flycheck-tip--get element err)))
+  (when (fboundp 'flycheck-tip--get)
+    (flycheck-tip--get element err)))
 
 (defun error-tip-collect-current-file-errors (errors)
   "Collect errors from ERRORS."
@@ -178,10 +178,14 @@ appeared.  The POINT arg is a point to show up error(s)."
 (defun error-tip-error-p ()
   "Return non-nil if error is occurred in current buffer.
 This function can catch error against flycheck, and flymake."
-  (or (bound-and-true-p flycheck-current-errors)
-      (bound-and-true-p flymake-err-info)
-      (and (fboundp 'flymake-diagnostics)
-           (flymake-diagnostics))))
+  (cond
+   ((bound-and-true-p flycheck-current-errors)
+    'flycheck)
+   ((or (bound-and-true-p flymake-err-info)
+        (and (fboundp 'flymake-diagnostics)
+             (flymake-diagnostics)))
+    'flymake)
+   (t nil)))
 
 ;;;###autoload
 (defun error-tip-cycle-dwim (&optional reverse)
@@ -190,12 +194,10 @@ This function switches proper error showing function by context.
  (whether flycheck or flymake) The REVERSE option jumps by inverse if
 the value is non-nil."
   (interactive)
-  (let ((func (cond
-               ((bound-and-true-p flycheck-mode)
-                'flycheck-tip-cycle)
-               ((bound-and-true-p flymake-mode)
-                'flymake-tip-cycle))))
-    (funcall func reverse)))
+  (funcall (cl-case (error-tip-error-p)
+             (flycheck 'flycheck-tip-cycle)
+             (flymake  'flymake-tip-cycle))
+           reverse))
 
 ;;;###autoload
 (defun error-tip-cycle-dwim-reverse ()
