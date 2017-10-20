@@ -28,7 +28,6 @@
 (require 'error-tip)
 (require 'flymake)
 (require 'cl-lib)
-(require 'flymake)
 
 (defvar flymake-tip--err-info-function
   (cond
