@@ -1,4 +1,5 @@
 # flycheck-tip.el
+[![Travis CI](https://travis-ci.org/yuutayamada/flycheck-tip.svg?branch=master)](https://travis-ci.org/yuutayamada/flycheck-tip)
 
 A package to show flycheck's error(s) after jumping to the point.
 
