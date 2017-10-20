@@ -230,6 +230,17 @@ See also ‘error-tip-notify-keep-messages’"
               :replaces-id error-tip-notify-last-notification
               :timeout error-tip-notify-timeout))))))
 
+;; Manual test:
+;; (defun error-tip--test-toggle-flymake-and-flycheck ()
+;;   (interactive)
+;;   (if flymake-mode
+;;       (flymake-mode 0)
+;;     (flymake-mode 1))
+;;   (if flycheck-mode
+;;       (flycheck-mode 0)
+;;     (flycheck-mode 1) ))
+;; (error-tip--test-toggle-flymake-and-flycheck)
+
 (provide 'error-tip)
 
 ;; Local Variables:
