@@ -189,8 +189,8 @@ appeared.  The POINT arg is a point to show up error(s)."
 This function can catch error against flycheck, flymake and emcas-eclim."
   (or (bound-and-true-p flycheck-current-errors)
       (bound-and-true-p flymake-err-info)
-      (and (fboundp 'flymake--overlays)
-           (flymake--overlays))
+      (and (fboundp 'flymake-diagnostics)
+           (flymake-diagnostics))
       (and (fboundp 'eclim--problems-filtered)
            (eclim--problems-filtered))))
 
