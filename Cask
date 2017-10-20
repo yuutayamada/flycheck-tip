@@ -8,4 +8,5 @@
 
 (development
  (depends-on "flycheck")
+ (depends-on "popup")
  (depends-on "cl-lib"))
