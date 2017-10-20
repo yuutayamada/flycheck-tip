@@ -1,7 +1,9 @@
 # flycheck-tip.el
 [![Travis CI](https://travis-ci.org/yuutayamada/flycheck-tip.svg?branch=master)](https://travis-ci.org/yuutayamada/flycheck-tip)
 
-A package to show flycheck's error(s) after jumping to the point.
+A package to show flycheck and flymake's error(s) after jumped to the point.
+(Those of you who don't know about Emacs 26's new flymake take a look:
+https://lists.gnu.org/archive/html/emacs-devel/2017-09/msg00953.html)
 
 ![screenshot](https://lh3.googleusercontent.com/-xQ9YEUo-ufc/UmSXPW51F5I/AAAAAAAACvw/VmendRlrXlA/s640/Screenshot%2520from%25202013-10-20%252022%253A51%253A32.png)
 
@@ -22,18 +24,17 @@ You can install this package via MELPA
 ## Usage
 
 ```lisp
-(require 'flycheck-tip)
 (define-key your-prog-mode (kbd "C-c C-n") 'flycheck-tip-cycle)
 ;; To avoid echoing error message on minibuffer (optional)
 (setq flycheck-display-errors-function 'ignore)
 ```
 
-If you are still using flymake, you can use combined function that
+If you use both flycheck and flymake, you can use combined function that
 show error by popup in flymake-mode or flycheck-mode.
 
 ```lisp
-(define-key global-map (kbd "C-0") 'error-tip-cycle-dwim)
-(define-key global-map (kbd "C-9") 'error-tip-cycle-dwim-reverse)
+(define-key global-map (kbd "C-c C-n") 'error-tip-cycle-dwim)
+(define-key global-map (kbd "C-c C-p") 'error-tip-cycle-dwim-reverse)
 ```
 
 Do M-x flycheck-tip-cycle or push its key when error occurred on
@@ -46,6 +47,9 @@ This keeps the errors on notification area. Please check
 `error-tip-notify-timeout` to change limit of the timeout as well.
 
     (setq error-tip-notify-keep-messages t)
+
+## TODO
+Maybe this package should be renamed like error-tip or something
 
 ## Flycheck's official package
 
