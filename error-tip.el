@@ -88,10 +88,7 @@ If you set nil to this variable, then do not use delay timer.")
 (defun error-tip-get (err element)
   (cond
    ((bound-and-true-p flycheck-mode)
-    (cl-case element
-      (file    (flycheck-error-filename err))
-      (line    (flycheck-error-line     err))
-      (message (flycheck-error-message  err))))
+    (flycheck-tip--get element err))
    ((bound-and-true-p eclim-mode)
     (cl-case element
       (line    (assoc-default 'line     err))
