@@ -35,9 +35,8 @@
    ((version<= "26" (number-to-string emacs-major-version))
     '(lambda ()
        ;; Return list of string of error/warning info on the current cursor
-       (cl-loop
-        for ov in (flymake--overlays :beg (point-at-bol) :end (point-at-eol))
-        collect (flymake--diag-text (overlay-get ov 'flymake--diagnostic)))))
+       (cl-loop for diag in (flymake-diagnostics (point-at-bol) (point-at-eol))
+                collect (flymake-diagnostic-text diag))))
 
    ((fboundp 'flymake-find-err-info)
     '(lambda ()

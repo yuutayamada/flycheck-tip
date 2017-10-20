@@ -86,17 +86,8 @@ If you set nil to this variable, then do not use delay timer.")
       (funcall jump target))))
 
 (defun error-tip-get (err element)
-  (cond
-   ((bound-and-true-p flycheck-mode)
-    (cl-case element
-      (file    (flycheck-error-filename err))
-      (line    (flycheck-error-line     err))
-      (message (flycheck-error-message  err))))
-   ((bound-and-true-p eclim-mode)
-    (cl-case element
-      (line    (assoc-default 'line     err))
-      (file    (assoc-default 'filename err))
-      (message (assoc-default 'message  err))))))
+  ((bound-and-true-p flycheck-mode)
+   (flycheck-tip--get element err)))
 
 (defun error-tip-collect-current-file-errors (errors)
   "Collect errors from ERRORS."
@@ -186,13 +177,11 @@ appeared.  The POINT arg is a point to show up error(s)."
 ;;;###autoload
 (defun error-tip-error-p ()
   "Return non-nil if error is occurred in current buffer.
-This function can catch error against flycheck, flymake and emcas-eclim."
+This function can catch error against flycheck, and flymake."
   (or (bound-and-true-p flycheck-current-errors)
       (bound-and-true-p flymake-err-info)
-      (and (fboundp 'flymake--overlays)
-           (flymake--overlays))
-      (and (fboundp 'eclim--problems-filtered)
-           (eclim--problems-filtered))))
+      (and (fboundp 'flymake-diagnostics)
+           (flymake-diagnostics))))
 
 ;;;###autoload
 (defun error-tip-cycle-dwim (&optional reverse)
@@ -204,8 +193,6 @@ the value is non-nil."
   (let ((func (cond
                ((bound-and-true-p flycheck-mode)
                 'flycheck-tip-cycle)
-               ((bound-and-true-p eclim-mode)
-                'eclim-tip-cycle)
                ((bound-and-true-p flymake-mode)
                 'flymake-tip-cycle))))
     (funcall func reverse)))
@@ -232,6 +219,17 @@ See also ‘error-tip-notify-keep-messages’"
                                 error-tip-current-errors)))
               :replaces-id error-tip-notify-last-notification
               :timeout error-tip-notify-timeout))))))
+
+;; Manual test:
+;; (defun error-tip--test-toggle-flymake-and-flycheck ()
+;;   (interactive)
+;;   (if flymake-mode
+;;       (flymake-mode 0)
+;;     (flymake-mode 1))
+;;   (if flycheck-mode
+;;       (flycheck-mode 0)
+;;     (flycheck-mode 1) ))
+;; (error-tip--test-toggle-flymake-and-flycheck)
 
 (provide 'error-tip)
 
